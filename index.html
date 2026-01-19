@@ -130,22 +130,27 @@
     font-size: clamp(18px, 5vw, 34px);
     vertical-align: middle;
   }
-  .td-info, .td-swap{
+  .td-info{
+    white-space: nowrap;
+  }
+
+  .td-swap{
     overflow:hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+
   #logTable tr:nth-child(even) td{ background: var(--card2); }
   #logTable tr td:first-child{ border-top-left-radius: 10px; border-bottom-left-radius: 10px; }
   #logTable tr td:last-child{ border-top-right-radius: 10px; border-bottom-right-radius: 10px; }
 
-  #logTable col.col-min{ width: 80px; }
-  #logTable col.col-score{ width: 100px; }
+  #logTable col.col-min{ width: 75px; }
+  #logTable col.col-score{ width: 90px; }
   #logTable col.col-info{ width: auto; }
   #logTable col.col-icon{ width: 52px; }
 
   .td-min{ font-weight: 900; }
-  .td-score{ font-weight: 900; text-align: center; }
+  .td-score{ font-weight: 900; }
   .td-info{ font-weight: 900; }
   .td-swap{ font-weight: 900; }
   .swap-label{ font-weight: 400; }
@@ -232,7 +237,7 @@
 
   @media (max-width: 360px){
     #logTable col.col-min{ width: 40px; }
-    #logTable col.col-score{ width: 82px; }
+    #logTable col.col-score{ width: 68px; }
     #logTable col.col-icon{ width: 48px; }
     .icon-btn{ width: 32px; height: 32px; font-size: 22px; }
     .top-actions{ grid-template-columns: 1fr; }
@@ -907,6 +912,7 @@ window.addEventListener("beforeunload", (e) => {
 
 </body>
 </html>
+
 
 
 
