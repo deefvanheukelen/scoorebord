@@ -422,9 +422,7 @@ function updateScoreboard(){
 }
 
 function scoringTeamForGoal(goal){
-  // bij OG telt hij voor de tegenstander
-  if (!goal.isOG) return goal.team;
-  return (goal.team === "home") ? "away" : "home";
+  return goal.team;
 }
 
 function recomputeScore(){
@@ -909,4 +907,5 @@ window.addEventListener("beforeunload", (e) => {
 
 </body>
 </html>
+
 
