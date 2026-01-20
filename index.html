@@ -3,15 +3,10 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#000000">
-
 <title>Voetbal Scorebord</title>
 
-<!-- Google Font: Micro 5 Charted -->
 <link href="https://fonts.googleapis.com/css2?family=Micro+5+Charted&display=swap" rel="stylesheet">
 
-<!-- jsPDF + AutoTable (echte PDF export) -->
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
 
@@ -19,6 +14,7 @@
   :root{
     --bg:#f4f4f4; --black:#000; --red:#ff0000; --green:#28a745; --blue:#007bff; --darkred:darkred;
     --card:#fff; --card2:#fff; --gray:#333; --orange:#ff8c00;
+    --yellow:#f5c400; --redcard:#c40000;
   }
   *{ box-sizing:border-box; }
   html, body{ height:100%; }
@@ -32,14 +28,16 @@
   }
   .wrap{ max-width: 560px; margin: 0 auto; padding: 10px 12px 18px; }
 
+  /* TOP ACTIONS */
   .top-actions{
     display:grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1.2fr;
     gap: 10px;
     margin-bottom: 10px;
+    align-items: stretch;
   }
 
-  #newMatchBtn, #subBtn{
+  #newMatchBtn{
     width:100%;
     border:none;
     border-radius: 10px;
@@ -48,11 +46,39 @@
     font-size: clamp(18px, 5vw, 26px);
     padding: 14px 0;
     touch-action: manipulation;
+    background: var(--gray);
   }
-  #newMatchBtn{ background: var(--gray); }
-  #subBtn{ background: var(--orange); }
-  #newMatchBtn:active, #subBtn:active{ transform: translateY(1px); }
+  #newMatchBtn:active{ transform: translateY(1px); }
 
+  .sub-group{
+    display:grid;
+    grid-template-columns: 1fr 46px 46px;
+    gap: 8px;
+  }
+  #subBtn{
+    width:100%;
+    border:none;
+    border-radius: 10px;
+    color:#fff;
+    font-weight: 900;
+    font-size: clamp(18px, 5vw, 26px);
+    padding: 14px 0;
+    touch-action: manipulation;
+    background: var(--orange);
+  }
+  #subBtn:active{ transform: translateY(1px); }
+
+  .card-btn{
+    border:none;
+    border-radius: 10px;
+    padding:0;
+    touch-action: manipulation;
+  }
+  .card-btn:active{ transform: translateY(1px); }
+  #yellowBtn{ background: var(--yellow); }
+  #redBtn{ background: var(--redcard); }
+
+  /* SCORE/TIMER */
   .top-row{
     display:grid;
     grid-template-columns: 1fr 1.3fr 1fr;
@@ -88,6 +114,7 @@
   }
   #startPauseBtn:active{ transform: translateY(1px); }
 
+  /* GOAL BUTTONS */
   .goal-container{
     display:grid;
     grid-template-columns: 1fr 1fr;
@@ -116,7 +143,7 @@
     overflow-wrap:anywhere;
   }
 
-  /* -------------------- OVERZICHT = TABLE -------------------- */
+  /* OVERZICHT (TABLE) */
   #logWrap{ margin-top: 10px; width:100%; }
   table#logTable{
     width:100%;
@@ -130,11 +157,8 @@
     font-size: clamp(18px, 5vw, 34px);
     vertical-align: middle;
   }
-  .td-info{
-    white-space: nowrap;
-  }
 
-  .td-swap{
+  .td-info, .td-swap{
     overflow:hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -144,19 +168,18 @@
   #logTable tr td:first-child{ border-top-left-radius: 10px; border-bottom-left-radius: 10px; }
   #logTable tr td:last-child{ border-top-right-radius: 10px; border-bottom-right-radius: 10px; }
 
-  #logTable col.col-min{ width: 75px; }
-  #logTable col.col-score{ width: 90px; }
+  #logTable col.col-min{ width: 70px; }
+  #logTable col.col-score{ width: 80px; }
   #logTable col.col-info{ width: auto; }
   #logTable col.col-icon{ width: 52px; }
 
   .td-min{ font-weight: 900; }
-  .td-score{ font-weight: 900; }
+  .td-score{ font-weight: 900; text-align: center; }
   .td-info{ font-weight: 900; }
   .td-swap{ font-weight: 900; }
   .swap-label{ font-weight: 400; }
 
   .td-icon{ text-align:center; }
-
   .icon-btn{
     background:none;
     border:none;
@@ -168,6 +191,7 @@
     touch-action: manipulation;
   }
 
+  /* PDF */
   #pdfBtn{
     margin-top: 14px;
     background:var(--darkred);
@@ -182,6 +206,7 @@
   }
   #pdfBtn:active{ transform: translateY(1px); }
 
+  /* POPUPS */
   .popup-bg{
     position:fixed;
     inset:0;
@@ -200,6 +225,7 @@
     padding: 18px;
   }
   .popup h2{ margin: 0 0 12px; font-size: 22px; }
+  .popup .hint{ color:#444; font-size: 14px; margin: -6px 0 10px; }
   .popup input, .popup select{
     width:100%;
     padding: 12px;
@@ -209,8 +235,6 @@
     border-radius: 10px;
     border: 1px solid #ccc;
   }
-
-  /* checkbox rij */
   .checkrow{
     display:flex;
     align-items:center;
@@ -234,13 +258,15 @@
   }
   .btn-ok{ background: var(--green); color: #fff; font-weight: 900; }
   .btn-cancel{ background: #666; color: #fff; font-weight: 900; }
+  .btn-danger{ background: #8b0000; color:#fff; font-weight: 900; }
 
   @media (max-width: 360px){
-    #logTable col.col-min{ width: 40px; }
+    #logTable col.col-min{ width: 56px; }
     #logTable col.col-score{ width: 68px; }
     #logTable col.col-icon{ width: 48px; }
     .icon-btn{ width: 32px; height: 32px; font-size: 22px; }
     .top-actions{ grid-template-columns: 1fr; }
+    .sub-group{ grid-template-columns: 1fr 44px 44px; }
   }
 </style>
 </head>
@@ -250,7 +276,12 @@
 
   <div class="top-actions">
     <button id="newMatchBtn">Nieuwe wedstrijd</button>
-    <button id="subBtn">Wissel</button>
+
+    <div class="sub-group" aria-label="Wissel en kaarten">
+      <button id="subBtn">Wissel</button>
+      <button id="yellowBtn" class="card-btn" title="Gele kaart" aria-label="Gele kaart"></button>
+      <button id="redBtn" class="card-btn" title="Rode kaart" aria-label="Rode kaart"></button>
+    </div>
   </div>
 
   <div class="top-row">
@@ -273,7 +304,6 @@
     </button>
   </div>
 
-  <!-- OVERZICHT (TABLE) -->
   <div id="logWrap">
     <table id="logTable" aria-label="Overzicht">
       <colgroup>
@@ -290,6 +320,15 @@
   <button id="pdfBtn" onclick="downloadPDF()">Download PDF</button>
 </div>
 
+<!-- MESSAGE POPUP (vervangt alert) -->
+<div id="msgPopupBg" class="popup-bg">
+  <div class="popup">
+    <h2 id="msgTitle">Melding</h2>
+    <div id="msgBody" style="font-size:18px; line-height:1.35; color:#111;"></div>
+    <button class="btn-ok" onclick="closeMsg()">OK</button>
+  </div>
+</div>
+
 <!-- GOAL POPUP -->
 <div id="goalPopupBg" class="popup-bg">
   <div class="popup">
@@ -303,6 +342,60 @@
 
     <button class="btn-ok" onclick="confirmGoal()">OK</button>
     <button class="btn-cancel" onclick="closeGoalPopup()">Annuleer</button>
+  </div>
+</div>
+
+<!-- SUB POPUP -->
+<div id="subPopupBg" class="popup-bg">
+  <div class="popup">
+    <h2>Wissel</h2>
+    <div>Speler UIT (rugnr):</div>
+    <input id="subOutInput" type="number" inputmode="numeric" placeholder="bv. 7">
+    <div>Speler IN (rugnr):</div>
+    <input id="subInInput" type="number" inputmode="numeric" placeholder="bv. 18">
+
+    <button class="btn-ok" onclick="confirmSub()">OK</button>
+    <button class="btn-cancel" onclick="closeSubPopup()">Annuleer</button>
+  </div>
+</div>
+
+<!-- CARD POPUP -->
+<div id="cardPopupBg" class="popup-bg">
+  <div class="popup">
+    <h2 id="cardTitle">Kaart</h2>
+    <div class="hint" id="cardHint"></div>
+    <input id="cardNumberInput" type="number" inputmode="numeric" placeholder="Rugnummer">
+
+    <button class="btn-ok" onclick="confirmCard()">OK</button>
+    <button class="btn-cancel" onclick="closeCardPopup()">Annuleer</button>
+  </div>
+</div>
+
+<!-- NEW MATCH POPUP -->
+<div id="newMatchPopupBg" class="popup-bg">
+  <div class="popup">
+    <h2>Nieuwe wedstrijd</h2>
+
+    <div>Ploeg THUIS:</div>
+    <input id="newHomeName" type="text" placeholder="bv. FC Thuis">
+
+    <div>Ploeg UIT:</div>
+    <input id="newAwayName" type="text" placeholder="bv. FC Uit">
+
+    <button class="btn-danger" onclick="confirmNewMatch()">Start nieuwe wedstrijd</button>
+    <button class="btn-cancel" onclick="closeNewMatchPopup()">Annuleer</button>
+  </div>
+</div>
+
+<!-- TIME POPUP (timer instellen) -->
+<div id="timePopupBg" class="popup-bg">
+  <div class="popup">
+    <h2>Timer instellen</h2>
+    <div class="hint">Gebruik <b>mm:ss</b> (bv. 18:30) of enkel <b>minuten</b> (bv. 63)</div>
+    <input id="timeInput" inputmode="numeric" placeholder="bv. 45:00">
+
+    <button class="btn-ok" onclick="confirmTimeSet()">OK</button>
+    <button class="btn-cancel" onclick="closeTimePopup()">Annuleer</button>
   </div>
 </div>
 
@@ -340,21 +433,32 @@
       <input id="editIn" type="number" inputmode="numeric" placeholder="bv. 18">
     </div>
 
+    <div id="editCardWrap" style="display:none;">
+      Type kaart:
+      <select id="editCardType">
+        <option value="yellow">Geel</option>
+        <option value="red">Rood</option>
+      </select>
+      Rugnummer:
+      <input id="editCardNumber" type="number" inputmode="numeric" placeholder="bv. 4">
+    </div>
+
     <button class="btn-ok" onclick="saveEdit()">Opslaan</button>
     <button class="btn-cancel" onclick="closeEditPopup()">Annuleer</button>
   </div>
 </div>
 
 <script>
-const STORAGE_KEY = "voetbal_scorebord_table_final_og_v1";
+const STORAGE_KEY = "voetbal_scorebord_table_modals_cards_v1";
 
 /* -------------------- STATE -------------------- */
 let teamHomeName = "THUIS";
 let teamAwayName = "UIT";
 
-let items = []; 
+let items = [];
 // goal: {type:"goal", timeSec, team, number, isOG}
 // sub:  {type:"sub",  timeSec, out, in}
+// card: {type:"card", timeSec, card:"yellow"|"red", number}
 
 let home = 0;
 let away = 0;
@@ -370,6 +474,16 @@ let halfTimeTriggered = false;
 
 const timerEl = document.getElementById("timer");
 const tbody = document.getElementById("logTbody");
+
+/* -------------------- MESSAGE POPUP (alert replacement) -------------------- */
+function showMessage(title, body){
+  document.getElementById("msgTitle").textContent = title || "Melding";
+  document.getElementById("msgBody").textContent = body || "";
+  document.getElementById("msgPopupBg").style.display = "flex";
+}
+function closeMsg(){
+  document.getElementById("msgPopupBg").style.display = "none";
+}
 
 /* -------------------- SAVE/LOAD -------------------- */
 function saveState(){
@@ -399,9 +513,10 @@ function loadState(){
     startEpochMs = (typeof data.startEpochMs === "number") ? data.startEpochMs : null;
     halfTimeTriggered = !!data.halfTimeTriggered;
 
-    // backward compat: als oude goals geen isOG hebben
+    // backward compat defaults
     for (const it of items){
       if (it.type === "goal" && typeof it.isOG !== "boolean") it.isOG = false;
+      if (it.type === "card" && (it.card !== "yellow" && it.card !== "red")) it.card = "yellow";
     }
 
     recomputeScore();
@@ -427,6 +542,7 @@ function updateScoreboard(){
 }
 
 function scoringTeamForGoal(goal){
+  // jouw wens: score gaat naar team waarvan knop werd geklikt (ook bij OG)
   return goal.team;
 }
 
@@ -442,7 +558,7 @@ function recomputeScore(){
 }
 
 function matchMinuteForLog(timeSec){
-  return Math.floor(timeSec / 60) + 1;
+  return Math.floor(timeSec / 60) + 1; // 00:45 => 1', 63:15 => 64'
 }
 
 function formatTimer(seconds){
@@ -490,13 +606,29 @@ function rebuildLog(){
       tdInfo.className = "td-info";
       tdInfo.textContent = `#${it.number}${it.isOG ? " (OG)" : ""}`;
       tr.appendChild(tdInfo);
-    } else {
+    }
+    else if (it.type === "sub"){
       const tdSwap = document.createElement("td");
       tdSwap.className = "td-swap";
       tdSwap.colSpan = 2;
       tdSwap.innerHTML =
         `<span class="swap-label">uit:</span> #${it.out} &nbsp;&nbsp; <span class="swap-label">in:</span> #${it.in}`;
       tr.appendChild(tdSwap);
+    }
+    else if (it.type === "card"){
+      const tdCard = document.createElement("td");
+      tdCard.className = "td-swap";
+      tdCard.colSpan = 2;
+      const sym = (it.card === "red") ? "🟥" : "🟨";
+      tdCard.textContent = `${sym} #${it.number}`;
+      tr.appendChild(tdCard);
+    }
+    else{
+      // onbekend type -> safe fallback
+      const td = document.createElement("td");
+      td.colSpan = 2;
+      td.textContent = "-";
+      tr.appendChild(td);
     }
 
     const tdEdit = document.createElement("td");
@@ -539,6 +671,7 @@ function syncTimerUI(){
   const sec = getElapsedSecondsNow();
   timerEl.textContent = formatTimer(sec);
 
+  // auto pauze 1x bij 45:00
   if (running && !halfTimeTriggered && sec >= HALF_TIME_SECONDS){
     halfTimeTriggered = true;
     saveState();
@@ -607,14 +740,22 @@ function parseTimeToSeconds(input){
   return mm * 60 + ss;
 }
 
+/* Timer klikken -> mooie popup */
 timerEl.onclick = function(){
   const current = getElapsedSecondsNow();
-  const input = prompt("Geef nieuwe tijd in (mm:ss) of enkel minuten (mm):", formatTimer(current));
-  if (!input) return;
-
+  document.getElementById("timeInput").value = formatTimer(current);
+  document.getElementById("timePopupBg").style.display = "flex";
+  setTimeout(() => document.getElementById("timeInput").focus(), 0);
+};
+function closeTimePopup(){
+  document.getElementById("timePopupBg").style.display = "none";
+}
+function confirmTimeSet(){
+  const input = document.getElementById("timeInput").value;
   const sec = parseTimeToSeconds(input);
+
   if (sec === null){
-    alert("Ongeldig formaat. Gebruik mm:ss of enkel mm.");
+    showMessage("Ongeldige tijd", "Gebruik mm:ss (bv. 18:30) of enkel minuten (bv. 63).");
     return;
   }
 
@@ -629,7 +770,8 @@ timerEl.onclick = function(){
 
   saveState();
   syncTimerUI();
-};
+  closeTimePopup();
+}
 
 document.addEventListener("visibilitychange", () => { if (!document.hidden) syncTimerUI(); });
 window.addEventListener("pageshow", () => syncTimerUI());
@@ -651,11 +793,14 @@ function closeGoalPopup(){ document.getElementById("goalPopupBg").style.display 
 
 function confirmGoal(){
   const nr = document.getElementById("goalNumberInput").value;
-  if (nr === "") return;
+  if (nr === ""){
+    showMessage("Invoer ontbreekt", "Geef een rugnummer in.");
+    return;
+  }
 
   const isOG = document.getElementById("goalOgCheck").checked;
-
   const timeSec = getElapsedSecondsNow();
+
   items.push({ type:"goal", timeSec, team: currentTeam, number: String(nr).trim(), isOG });
 
   recomputeScore();
@@ -665,25 +810,101 @@ function confirmGoal(){
   closeGoalPopup();
 }
 
-/* -------------------- WISSEL -------------------- */
-function addSubstitution(){
-  const outNr = prompt("Wissel - speler UIT (rugnummer):", "");
-  if (outNr === null) return;
-  const outClean = String(outNr).trim();
-  if (!outClean) { alert("Rugnummer UIT is verplicht."); return; }
+/* -------------------- SUB POPUP -------------------- */
+function openSubPopup(){
+  document.getElementById("subPopupBg").style.display = "flex";
+  document.getElementById("subOutInput").value = "";
+  document.getElementById("subInInput").value = "";
+  setTimeout(() => document.getElementById("subOutInput").focus(), 0);
+}
+function closeSubPopup(){ document.getElementById("subPopupBg").style.display = "none"; }
 
-  const inNr = prompt("Wissel - speler IN (rugnummer):", "");
-  if (inNr === null) return;
-  const inClean = String(inNr).trim();
-  if (!inClean) { alert("Rugnummer IN is verplicht."); return; }
+function confirmSub(){
+  const outVal = String(document.getElementById("subOutInput").value || "").trim();
+  const inVal  = String(document.getElementById("subInInput").value || "").trim();
+  if (!outVal){ showMessage("Invoer ontbreekt", "Geef een rugnummer UIT in."); return; }
+  if (!inVal){ showMessage("Invoer ontbreekt", "Geef een rugnummer IN in."); return; }
 
   const timeSec = getElapsedSecondsNow();
-  items.push({ type:"sub", timeSec, out: outClean, in: inClean });
+  items.push({ type:"sub", timeSec, out: outVal, in: inVal });
 
   rebuildLog();
   saveState();
+  closeSubPopup();
 }
-document.getElementById("subBtn").addEventListener("click", addSubstitution);
+document.getElementById("subBtn").addEventListener("click", openSubPopup);
+
+/* -------------------- CARDS -------------------- */
+let currentCardType = "yellow";
+
+function openCardPopup(type){
+  currentCardType = type;
+  const title = (type === "red") ? "Rode kaart" : "Gele kaart";
+  document.getElementById("cardTitle").textContent = title;
+  document.getElementById("cardHint").textContent = "Geef het rugnummer van de speler.";
+  document.getElementById("cardNumberInput").value = "";
+
+  document.getElementById("cardPopupBg").style.display = "flex";
+  setTimeout(() => document.getElementById("cardNumberInput").focus(), 0);
+}
+function closeCardPopup(){
+  document.getElementById("cardPopupBg").style.display = "none";
+}
+function confirmCard(){
+  const nr = String(document.getElementById("cardNumberInput").value || "").trim();
+  if (!nr){
+    showMessage("Invoer ontbreekt", "Geef een rugnummer in.");
+    return;
+  }
+  const timeSec = getElapsedSecondsNow();
+  items.push({ type:"card", timeSec, card: currentCardType, number: nr });
+
+  rebuildLog();
+  saveState();
+  closeCardPopup();
+}
+document.getElementById("yellowBtn").addEventListener("click", () => openCardPopup("yellow"));
+document.getElementById("redBtn").addEventListener("click", () => openCardPopup("red"));
+
+/* -------------------- NEW MATCH POPUP -------------------- */
+function openNewMatchPopup(){
+  document.getElementById("newMatchPopupBg").style.display = "flex";
+  document.getElementById("newHomeName").value = teamHomeName;
+  document.getElementById("newAwayName").value = teamAwayName;
+  setTimeout(() => document.getElementById("newHomeName").focus(), 0);
+}
+function closeNewMatchPopup(){ document.getElementById("newMatchPopupBg").style.display = "none"; }
+
+function confirmNewMatch(){
+  let h = String(document.getElementById("newHomeName").value || "").trim();
+  let a = String(document.getElementById("newAwayName").value || "").trim();
+  if (!h) h = "THUIS";
+  if (!a) a = "UIT";
+
+  // reset alles
+  running = false;
+  elapsedWhenStartedSec = 0;
+  startEpochMs = null;
+  if (uiInterval){ clearInterval(uiInterval); uiInterval = null; }
+
+  halfTimeTriggered = false;
+  items = [];
+  home = 0; away = 0;
+
+  teamHomeName = h;
+  teamAwayName = a;
+
+  updateTeamUI();
+  updateScoreboard();
+  rebuildLog();
+
+  timerEl.textContent = "00:00";
+  document.getElementById("startPauseBtn").textContent = "START";
+
+  saveState();
+  closeNewMatchPopup();
+}
+document.getElementById("newMatchBtn").addEventListener("click", openNewMatchPopup);
 
 /* -------------------- EDIT/DELETE -------------------- */
 let editIndex = null;
@@ -695,34 +916,44 @@ function editItem(index){
   document.getElementById("editTime").value = formatTime(it.timeSec);
 
   const isGoal = (it.type === "goal");
-  document.getElementById("editTitle").textContent = isGoal ? "Wijzig doelpunt" : "Wijzig wissel";
+  const isSub  = (it.type === "sub");
+  const isCard = (it.type === "card");
+
+  document.getElementById("editTitle").textContent =
+    isGoal ? "Wijzig doelpunt" : (isSub ? "Wijzig wissel" : "Wijzig kaart");
 
   document.getElementById("editTeamWrap").style.display = isGoal ? "block" : "none";
   document.getElementById("editNumberWrap").style.display = isGoal ? "block" : "none";
   document.getElementById("editOgWrap").style.display = isGoal ? "block" : "none";
-  document.getElementById("editSubWrap").style.display = isGoal ? "none" : "block";
+  document.getElementById("editSubWrap").style.display = isSub ? "block" : "none";
+  document.getElementById("editCardWrap").style.display = isCard ? "block" : "none";
 
   if (isGoal){
     document.getElementById("editTeam").value = it.team;
     document.getElementById("editNumber").value = it.number;
     document.getElementById("editOgCheck").checked = !!it.isOG;
-  }else{
+  } else if (isSub){
     document.getElementById("editOut").value = it.out;
     document.getElementById("editIn").value = it.in;
+  } else if (isCard){
+    document.getElementById("editCardType").value = it.card;
+    document.getElementById("editCardNumber").value = it.number;
   }
 
   document.getElementById("editPopupBg").style.display = "flex";
   setTimeout(() => document.getElementById("editTime").focus(), 0);
 }
 
-function closeEditPopup(){ document.getElementById("editPopupBg").style.display = "none"; }
+function closeEditPopup(){
+  document.getElementById("editPopupBg").style.display = "none";
+}
 
 function saveEdit(){
   const it = items[editIndex];
 
   const newTimeSec = parseTimeToSeconds(document.getElementById("editTime").value);
   if (newTimeSec === null){
-    alert("Ongeldige tijd. Gebruik mm:ss of enkel mm.");
+    showMessage("Ongeldige tijd", "Gebruik mm:ss (bv. 18:30) of enkel minuten (bv. 63).");
     return;
   }
 
@@ -731,7 +962,7 @@ function saveEdit(){
     const newNumber = document.getElementById("editNumber").value;
     const newIsOG = document.getElementById("editOgCheck").checked;
 
-    if (newNumber === ""){ alert("Rugnummer is verplicht."); return; }
+    if (newNumber === ""){ showMessage("Invoer demonstrkt", "Geef een rugnummer in."); return; }
 
     it.timeSec = newTimeSec;
     it.team = newTeam;
@@ -746,18 +977,36 @@ function saveEdit(){
     return;
   }
 
-  const outVal = String(document.getElementById("editOut").value || "").trim();
-  const inVal  = String(document.getElementById("editIn").value || "").trim();
-  if (!outVal){ alert("Speler UIT is verplicht."); return; }
-  if (!inVal){ alert("Speler IN is verplicht."); return; }
+  if (it.type === "sub"){
+    const outVal = String(document.getElementById("editOut").value || "").trim();
+    const inVal  = String(document.getElementById("editIn").value || "").trim();
+    if (!outVal){ showMessage("Invoer ontbreekt", "Geef een rugnummer UIT in."); return; }
+    if (!inVal){ showMessage("Invoer ontbreekt", "Geef een rugnummer IN in."); return; }
 
-  it.timeSec = newTimeSec;
-  it.out = outVal;
-  it.in = inVal;
+    it.timeSec = newTimeSec;
+    it.out = outVal;
+    it.in = inVal;
 
-  rebuildLog();
-  saveState();
-  closeEditPopup();
+    rebuildLog();
+    saveState();
+    closeEditPopup();
+    return;
+  }
+
+  if (it.type === "card"){
+    const type = document.getElementById("editCardType").value;
+    const nr = String(document.getElementById("editCardNumber").value || "").trim();
+    if (!nr){ showMessage("Invoer ontbreekt", "Geef een rugnummer in."); return; }
+
+    it.timeSec = newTimeSec;
+    it.card = (type === "red") ? "red" : "yellow";
+    it.number = nr;
+
+    rebuildLog();
+    saveState();
+    closeEditPopup();
+    return;
+  }
 }
 
 function deleteItem(index){
@@ -768,7 +1017,7 @@ function deleteItem(index){
   saveState();
 }
 
-/* -------------------- PDF: aparte tabellen Goals + Wissels -------------------- */
+/* -------------------- PDF: Goals + Wissels + Kaarten -------------------- */
 function downloadPDF(){
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ unit: "pt", format: "a4" });
@@ -787,7 +1036,7 @@ function downloadPDF(){
   const dateOnly = new Date().toLocaleDateString("nl-BE");
   doc.text(`Datum: ${dateOnly}`, marginX, y); y += 18;
   doc.text(`Ploegen: ${teamHomeName} (thuis) vs ${teamAwayName} (uit)`, marginX, y); y += 18;
-  doc.text(`Eindstand: ${teamHomeName} ${home} - ${away} ${teamAwayName}`, marginX, y); y += 16;
+  doc.text(`Eindstand: ${teamHomeName} ${home} - ${away} ${teamAwayName}`, marginX, y); y += 10;
 
   const withIndex = items.map((it, idx) => ({...it, _idx: idx}));
   withIndex.sort((a,b) => a.timeSec - b.timeSec || a._idx - b._idx);
@@ -795,23 +1044,29 @@ function downloadPDF(){
   let h = 0, a = 0;
   const goalRows = [];
   const subRows = [];
+  const cardRows = [];
 
   for (const it of withIndex){
     const tijd = matchMinuteForLog(it.timeSec) + "'";
 
     if (it.type === "goal"){
-      const scoring = scoringTeamForGoal(it);
-      if (scoring === "home") h++; else a++;
+      const t = scoringTeamForGoal(it);
+      if (t === "home") h++; else a++;
 
       const score = `${h}-${a}`;
       const rug = `#${it.number}${it.isOG ? " (OG)" : ""}`;
       goalRows.push([tijd, score, rug]);
-    }else if (it.type === "sub"){
+    }
+    else if (it.type === "sub"){
       subRows.push([tijd, `#${it.out}`, `#${it.in}`]);
+    }
+    else if (it.type === "card"){
+      const cardName = (it.card === "red") ? "Rood" : "Geel";
+      cardRows.push([tijd, cardName, `#${it.number}`]);
     }
   }
 
-  y += 8;
+  y += 14;
   doc.setFont("helvetica", "bold");
   doc.setFontSize(14);
   doc.text("Goals", marginX, y);
@@ -839,48 +1094,22 @@ function downloadPDF(){
     margin: { left: marginX, right: marginX }
   });
 
+  y = doc.lastAutoTable.finalY + 18;
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(14);
+  doc.text("Kaarten", marginX, y);
+
+  doc.autoTable({
+    startY: y + 10,
+    head: [["Tijd", "Kaart", "Rugnr"]],
+    body: cardRows.length ? cardRows : [["-", "-", "-"]],
+    styles: { font: "helvetica", fontSize: 11, cellPadding: 6 },
+    headStyles: { fillColor: [30, 30, 30] },
+    margin: { left: marginX, right: marginX }
+  });
+
   doc.save("wedstrijd.pdf");
 }
-
-/* -------------------- Nieuwe wedstrijd -------------------- */
-function resetAllData(askNames){
-  running = false;
-  elapsedWhenStartedSec = 0;
-  startEpochMs = null;
-  if (uiInterval){ clearInterval(uiInterval); uiInterval = null; }
-
-  halfTimeTriggered = false;
-
-  items = [];
-  home = 0; away = 0;
-
-  if (askNames){
-    let h = prompt("Naam ploeg THUIS:", teamHomeName || "THUIS");
-    if (h !== null) h = h.trim();
-    if (!h) h = "THUIS";
-
-    let a = prompt("Naam ploeg UIT:", teamAwayName || "UIT");
-    if (a !== null) a = a.trim();
-    if (!a) a = "UIT";
-
-    teamHomeName = h;
-    teamAwayName = a;
-  }
-
-  updateTeamUI();
-  updateScoreboard();
-  rebuildLog();
-  timerEl.textContent = "00:00";
-  document.getElementById("startPauseBtn").textContent = "START";
-
-  saveState();
-}
-
-document.getElementById("newMatchBtn").addEventListener("click", () => {
-  const ok = confirm("Nieuwe wedstrijd starten?\nAlle huidige gegevens worden gewist.");
-  if (!ok) return;
-  resetAllData(true);
-});
 
 /* Anti per ongeluk sluiten/refresh */
 window.addEventListener("beforeunload", (e) => {
@@ -901,18 +1130,5 @@ window.addEventListener("beforeunload", (e) => {
   syncTimerUI();
 })();
 </script>
-
-<script>
-  if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./sw.js");
-    });
-  }
-</script>
-
 </body>
 </html>
-
-
-
-
