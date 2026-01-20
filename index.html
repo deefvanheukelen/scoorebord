@@ -91,7 +91,7 @@
     background:var(--black);
     padding: 14px 10px;
     width:100%;
-    border-radius: 10px;
+    /* border-radius: 10px; */
   }
   .scorebox span, #timer{
     font-family:"Micro 5 Charted", monospace;
@@ -100,7 +100,7 @@
     display:block;
     line-height: 1;
     font-variant-numeric: tabular-nums;
-    font-size: clamp(56px, 14vw, 120px);
+    font-size: clamp(56px, 20vw, 120px);
   }
   #timer{ cursor:pointer; padding: 6px 0; user-select:none; }
 
@@ -279,10 +279,13 @@
 </head>
 
 <body>
-<div class="wrap">
-  <div id="hdr">
-    <h1>SCOOREBORD v1</h1>
+<div class="top-row">
+    <div class="scorebox"><span id="scoreHome">0</span></div>
+    <div id="timer">00:00</div>
+    <div class="scorebox"><span id="scoreAway">0</span></div>
   </div>
+<div class="wrap">
+  <button id="startPauseBtn">▶</button>
 
   <div class="top-actions">
     <button id="newMatchBtn">Nieuwe wedstrijd</button>
@@ -294,13 +297,6 @@
     </div>
   </div>
 
-  <div class="top-row">
-    <div class="scorebox"><span id="scoreHome">0</span></div>
-    <div id="timer">00:00</div>
-    <div class="scorebox"><span id="scoreAway">0</span></div>
-  </div>
-
-  <button id="startPauseBtn">START</button>
 
   <div class="goal-container">
     <button class="goal-btn" onclick="openGoalPopup('home')">
@@ -705,7 +701,7 @@ function startTimer(){
   startEpochMs = Date.now();
   running = true;
 
-  document.getElementById("startPauseBtn").textContent = "PAUZE";
+  document.getElementById("startPauseBtn").textContent = "❚❚";
   startUiInterval();
 
   saveState();
@@ -717,7 +713,7 @@ function pauseTimerAt(secNow){
   elapsedWhenStartedSec = secNow;
   startEpochMs = null;
 
-  document.getElementById("startPauseBtn").textContent = "START";
+  document.getElementById("startPauseBtn").textContent = "▶";
   stopUiInterval();
 
   saveState();
@@ -909,7 +905,7 @@ function confirmNewMatch(){
   rebuildLog();
 
   timerEl.textContent = "00:00";
-  document.getElementById("startPauseBtn").textContent = "START";
+  document.getElementById("startPauseBtn").textContent = "▶";
 
   saveState();
   closeNewMatchPopup();
@@ -1135,7 +1131,7 @@ window.addEventListener("beforeunload", (e) => {
   updateScoreboard();
   rebuildLog();
 
-  document.getElementById("startPauseBtn").textContent = running ? "PAUZE" : "START";
+  document.getElementById("startPauseBtn").textContent = running ? "❚❚" : "▶";
   if (running) startUiInterval();
   syncTimerUI();
 })();
