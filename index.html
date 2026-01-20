@@ -10,6 +10,8 @@
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
 
+<link rel="manifest" href="./manifest.webmanifest">
+<meta name="theme-color" content="#0b3d91">
 <style>
   :root{
     --bg:#f4f4f4; --black:#000; --red:#ff0000; --green:#28a745; --blue:#007bff; --darkred:darkred;
@@ -1130,5 +1132,15 @@ window.addEventListener("beforeunload", (e) => {
   syncTimerUI();
 })();
 </script>
+
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("./sw.js");
+    });
+  }
+</script>
+
 </body>
 </html>
+
