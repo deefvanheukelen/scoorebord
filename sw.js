@@ -1,10 +1,10 @@
-const CACHE_NAME = "scorebord-v1";
+const CACHE_NAME = "scorebord-v2";
 const ASSETS = [
   "./",
   "./index.html",
   "./manifest.webmanifest",
-  "./icon-192.png",
-  "./icon-512.png"
+  "./icon-192-v2.png",
+  "./icon-512-v2.png"
 ];
 
 // install
@@ -31,3 +31,4 @@ self.addEventListener("fetch", (event) => {
     caches.match(event.request).then((cached) => cached || fetch(event.request))
   );
 });
+
